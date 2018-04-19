@@ -12,30 +12,32 @@ load ruspini.txt
 % parâmetro de influência de pesos (m > 1)
 m = 2;
 
-% dimensões da base ruspini
-numvar = 2;
+% número de dados
+n = length(ruspini);
 
-% parãmetro número de centróides (protótipos)
+% dimensões da base ruspini
+p = size(ruspini, 2);
+
+% parâmetro número de centróides (protótipos)
 numcentros = 4;
 
 % inicialmente centróides aleatoriamente
-centros = ruspini(randperm(length(ruspini), numcentros), :);
+centros = ruspini(randperm(n, numcentros), :);
 
 % matriz de distâncias
-dist = zeros(length(ruspini), numcentros);
+dist = zeros(n, numcentros);
 
 % matriz de partição
-u = zeros(length(ruspini), numcentros);
+u = zeros(n, numcentros);
 
 % iterações
-ITER = 1;
-while ITER < 100
+for ITER = 1:100
     
     % calcula as distâncias
-    for i=1:length(ruspini)
-        for j=1:numcentros
+    for i = 1:n
+        for j = 1:numcentros
             dist(i, j) = 0;
-            for k=1:numvar
+            for k = 1:p
                 dist(i, j) = dist(i, j) + (centros(j, k) - ruspini(i, k))^2;
             end
             dist(i, j) = sqrt(dist(i, j));
@@ -43,8 +45,8 @@ while ITER < 100
     end
     
     % atualiza matriz de partição
-    for i=1:length(ruspini)
-        for j=1:numcentros
+    for i = 1:n
+        for j = 1:numcentros
             u(i, j) = 1 / sum((dist(i, j) ./ dist(i, :)).^(2 / (m-1)));
             if isnan(u(i, j))
                 u(i, j) = 1;
@@ -53,13 +55,11 @@ while ITER < 100
     end
     
     % atualiza os protótipos
-    for i=1:numcentros
-        for j=1:numvar
+    for i = 1:numcentros
+        for j = 1:p
             centros(i, j) = sum(ruspini(:, j) .* u(:, i).^m) / sum(u(:, i).^m);
         end
     end
-    
-    ITER = ITER + 1;
 end
 
 % gráficos de resultados
