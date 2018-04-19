@@ -3,6 +3,10 @@
 % Autor: Thiago Silva
 %
 
+clc
+clear all
+close all
+
 load ruspini.txt
 
 % parâmetro de influência de pesos (m > 1)
